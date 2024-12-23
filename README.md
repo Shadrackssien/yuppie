@@ -1,2 +1,2 @@
 # yuppie
-A movies application
+A movie application
