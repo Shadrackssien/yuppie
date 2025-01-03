@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .button1 {
+    @apply flex items-center justify-center bg-primary w-max h-max text-[#ffffff] font-bold rounded-lg py-1 cursor-pointer;
+  }
+  .button2 {
+    @apply flex items-center justify-center border-2 border-secondary w-max h-max text-[#ffffff] font-bold rounded-lg py-1 cursor-pointer;
+  }
+}
