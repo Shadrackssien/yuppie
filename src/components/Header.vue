@@ -36,7 +36,7 @@ export default {
       </div>
 
       <!-- Info -->
-      <div class="flex flex-col space-y-6 ml-40 mt-16 text-white">
+      <div class="flex flex-col space-y-6 mx-20 mt-16 text-white">
         <p class="font-bold text-3xl">Avatar: The Way of Water</p>
         <div class="flex flex-row space-x-2">
           <p
