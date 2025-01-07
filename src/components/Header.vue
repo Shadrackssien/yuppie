@@ -5,7 +5,13 @@ import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
 import star from "../assets/star.png";
 
+import { RouterLink } from "vue-router";
+import { fetchData } from "../services/api";
+
 export default {
+  components: {
+    RouterLink,
+  },
   data() {
     return {
       play,
@@ -13,7 +19,18 @@ export default {
       calendar,
       time,
       star,
+      movie: null,
     };
+  },
+  async mounted() {
+    try {
+      // Fetch data from the API
+      const data = await fetchData("most-popular-movies"); // Adjust endpoint if needed
+      // Assume the first movie in the list for now
+      this.movie = data.movies ? data.movies[0] : null; // Ensure you match the API structure
+    } catch (error) {
+      console.error("Error fetching movie data:", error.message);
+    }
   },
 };
 </script>
@@ -26,7 +43,9 @@ export default {
       <!-- watch now -->
       <div class="text-white flex items-center justify-center mt-64 space-x-8">
         <button class="button1 p-4 space-x-2">
-          <p class="font-bold text-lg">Watch Now</p>
+          <RouterLink class="font-bold text-lg" to="/movie"
+            >Watch Now</RouterLink
+          >
           <img class="w-6 h-6" :src="play" alt="play" />
         </button>
         <button class="button2 p-4 space-x-2">
