@@ -6,7 +6,6 @@ import time from "../assets/time.png";
 import star from "../assets/star.png";
 
 import { RouterLink } from "vue-router";
-import { fetchData } from "../services/api";
 
 export default {
   components: {
@@ -19,33 +18,66 @@ export default {
       calendar,
       time,
       star,
-      movie: null,
+      movies: [],
+      currentIndex: 0,
+      slideInterval: null,
     };
   },
+  computed: {
+    movie() {
+      return this.movies[this.currentIndex] || null;
+    },
+  },
+  methods: {
+    startSlideShow() {
+      this.slideInterval = setInterval(() => {
+        this.currentIndex = (this.currentIndex + 1) % 5;
+      }, 8000);
+    },
+    beforeUnmount() {
+      clearInterval(this.slideInterval);
+    },
+  },
   async mounted() {
-    try {
-      // Fetch data from the API
-      const data = await fetchData("most-popular-movies"); // Adjust endpoint if needed
-      // Assume the first movie in the list for now
-      this.movie = data.movies ? data.movies[0] : null; // Ensure you match the API structure
-    } catch (error) {
-      console.error("Error fetching movie data:", error.message);
-    }
+    const genreResponse = await this.$http.get("/genre/movie/list");
+    const genreMap = {};
+    genreResponse.data.genres.forEach((genre) => {
+      genreMap[genre.id] = genre.name;
+    });
+
+    const response = await this.$http.get("/movie/popular");
+    this.movies = response.data.results.slice(0, 5).map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      image: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+      description: movie.overview,
+      year: movie.release_date,
+      rating: movie.vote_average,
+      genre: movie.genre_ids.map((id) => genreMap[id]),
+    }));
+
+    this.startSlideShow();
   },
 };
 </script>
 <template>
   <div
-    class="relative flex w-[100%] h-[700px] flex-col bg-[url('./assets/header.png')] bg-cover bg-center"
+    :style="{
+      backgroundImage: `url(${movie ? movie.image : ''})`,
+    }"
+    class="relative flex w-[100%] h-[700px] flex-col bg-cover bg-center"
   >
     <!-- overlay -->
     <div class="absolute inset-0 bg-black bg-opacity-40 md:bg-opacity-20">
       <!-- watch now -->
       <div class="text-white flex items-center justify-center mt-64 space-x-8">
         <button class="button1 p-4 space-x-2">
-          <RouterLink class="font-bold text-lg" to="/movie"
-            >Watch Now</RouterLink
-          >
+          <RouterLink
+            v-if="movie"
+            class="font-bold text-lg"
+            :to="{ name: 'movie', params: { id: movie.id } }"
+            >Watch Now
+          </RouterLink>
           <img class="w-6 h-6" :src="play" alt="play" />
         </button>
         <button class="button2 p-4 space-x-2">
@@ -55,56 +87,44 @@ export default {
       </div>
 
       <!-- Info -->
-      <div class="flex flex-col space-y-6 mx-20 mt-16 text-white">
-        <p class="font-bold text-3xl">Avatar: The Way of Water</p>
+      <div v-if="movie" class="flex flex-col space-y-6 mx-20 mt-16 text-white">
+        <p class="font-bold text-3xl">{{ movie.title }}</p>
         <div class="flex flex-row space-x-2">
           <p
+            v-for="genre in movie.genre"
+            :key="genre"
             class="text-black text-base font-bold h-max w-max py-1 px-2 bg-white rounded-full"
           >
-            Action
+            {{ genre }}
           </p>
-          <p
-            class="text-black text-base font-bold h-max w-max py-1 px-2 bg-white rounded-full"
-          >
-            Adventure
-          </p>
-          <p
-            class="text-black text-base font-bold h-max w-max py-1 px-2 bg-white rounded-full"
-          >
-            Science Fiction
-          </p>
+
           <div class="flex flex-row items-center justify-center pl-2 space-x-6">
             <div class="flex items-center justify-center flex-row space-x-2">
               <img class="w-4 h-4" :src="calendar" alt="calendar" />
-              <p>2022</p>
+              <p>{{ movie.year }}</p>
             </div>
-            <div class="flex items-center justify-center flex-row space-x-2">
-              <img class="w-4 h-4" :src="time" alt="calendar" />
-              <p>3:12:00</p>
-            </div>
+
             <div class="flex items-center justify-center flex-row space-x-2">
               <img class="w-4 h-4" :src="star" alt="calendar" />
-              <p>8.5</p>
+              <p>{{ movie.rating }}</p>
             </div>
           </div>
         </div>
 
         <p class="w-[550px]">
-          Set more than a decade after the events of the first film, learn the
-          story of the Sully family (Jake, Neytiri, and their kids), the trouble
-          that follows them, the lengths they go to keep each other safe, the
-          battles they fight to stay alive, and the tragedies they endure.
+          {{ movie.description }}
         </p>
       </div>
       <!-- sliding -->
       <div class="flex items-center justify-center mx-auto space-x-2 mt-20">
-        <!-- current slide -->
-        <div class="w-8 h-2 bg-primary rounded-full"></div>
-        <!-- next slide -->
-        <div class="w-4 h-4 bg-white rounded-full"></div>
-        <div class="w-4 h-4 bg-white rounded-full"></div>
-        <div class="w-4 h-4 bg-white rounded-full"></div>
-        <div class="w-4 h-4 bg-white rounded-full"></div>
+        <div
+          v-for="(_, index) in movies"
+          :key="index"
+          :class="[
+            index === currentIndex ? 'w-8 h-2 bg-primary' : 'w-4 h-4 bg-white',
+            'rounded-full',
+          ]"
+        ></div>
       </div>
     </div>
   </div>
