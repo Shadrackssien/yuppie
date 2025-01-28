@@ -39,24 +39,28 @@ export default {
     },
   },
   async mounted() {
-    const genreResponse = await this.$http.get("/genre/movie/list");
-    const genreMap = {};
-    genreResponse.data.genres.forEach((genre) => {
-      genreMap[genre.id] = genre.name;
-    });
+    try {
+      const genreResponse = await this.$http.get("/genre/movie/list");
+      const genreMap = {};
+      genreResponse.data.genres.forEach((genre) => {
+        genreMap[genre.id] = genre.name;
+      });
 
-    const response = await this.$http.get("/movie/popular");
-    this.movies = response.data.results.slice(0, 5).map((movie) => ({
-      id: movie.id,
-      title: movie.title,
-      image: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
-      description: movie.overview,
-      year: movie.release_date,
-      rating: movie.vote_average,
-      genre: movie.genre_ids.map((id) => genreMap[id]),
-    }));
+      const response = await this.$http.get("/movie/popular");
+      this.movies = response.data.results.slice(0, 5).map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        image: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+        description: movie.overview,
+        year: movie.release_date,
+        rating: movie.vote_average,
+        genre: movie.genre_ids.map((id) => genreMap[id]),
+      }));
 
-    this.startSlideShow();
+      this.startSlideShow();
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 </script>
