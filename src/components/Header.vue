@@ -64,10 +64,12 @@ export default {
     :style="{
       backgroundImage: `url(${movie ? movie.image : ''})`,
     }"
-    class="relative flex w-[100%] h-[700px] flex-col bg-cover bg-center"
+    class="relative flex w-[100%] h-[700px] flex-col bg-cover bg-center z-[5]"
   >
     <!-- overlay -->
-    <div class="absolute inset-0 bg-black bg-opacity-40 md:bg-opacity-20">
+    <div
+      class="absolute inset-0 bg-black bg-opacity-40 md:bg-opacity-20 z-[10]"
+    >
       <!-- watch now -->
       <div class="text-white flex items-center justify-center mt-64 space-x-8">
         <button class="button1 p-4 space-x-2">

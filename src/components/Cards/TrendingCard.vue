@@ -1,24 +1,3 @@
-<!-- <script>
-export default {
-  props: {
-    serie: {
-      type: Object,
-      required: true,
-    },
-  },
-};
-</script>
-<template>
-  <div class="flex flex-row mt-8 space-x-8">
-    <img class="w-20 h-32" :src="img" :alt="serie.title" />
-    <div class="flex flex-col justify-center">
-      <p>{{ serie.title }}</p>
-      <p>Series/S {{ serie.season }}/EP {{ serie.episode }}</p>
-      <p>{{ serie.date }}</p>
-    </div>
-  </div>
-</template> -->
-
 <script>
 export default {
   name: "TrendingCard",

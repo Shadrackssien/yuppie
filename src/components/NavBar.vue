@@ -11,9 +11,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="flex items-center justify-between bg-black w-full h-max overflow-hidden"
-  >
+  <div class="flex relative items-center justify-between w-full z-[40]">
     <!-- logo -->
     <div class="flex items-center my-4 mx-2 md:mx-8">
       <router-link to="/">
