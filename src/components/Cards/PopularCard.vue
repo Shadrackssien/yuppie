@@ -33,8 +33,14 @@ export default {
 };
 </script>
 <template>
-  <div class="flex h-96 flex-col mb-12">
-    <img class="w-full h-full rounded-xl" :src="imagePath" :alt="movie.title" />
+  <div class="flex h-96 flex-col mb-32">
+    <RouterLink v-if="movie" :to="{ name: 'movie', params: { id: movie.id } }">
+      <img
+        class="w-full h-full rounded-xl"
+        :src="imagePath"
+        :alt="movie.title"
+      />
+    </RouterLink>
     <div class="flex items-center justify-between space-x-6 mt-2">
       <p class="text-xl font-semibold w-full line-clamp-1">{{ movie.title }}</p>
       <div class="flex flex-row pl-2 space-x-2">

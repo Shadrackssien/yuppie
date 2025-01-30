@@ -5,12 +5,7 @@ import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
 import star from "../assets/star.png";
 
-import { RouterLink } from "vue-router";
-
 export default {
-  components: {
-    RouterLink,
-  },
   data() {
     return {
       play,

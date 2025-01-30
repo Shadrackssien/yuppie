@@ -47,7 +47,7 @@ export default {
     <!-- Loading Spinner -->
     <div v-if="loading" class="flex justify-center items-center h-64">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-t-2 border-white"
+        class="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"
       ></div>
     </div>
 

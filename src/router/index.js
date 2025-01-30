@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Homepage from "../pages/Homepage.vue";
 import MoviePage from "../pages/Moviepage.vue";
+import SeriesPage from "../pages/Seriespage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,12 +18,10 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/series",
-      name: "series",
-      // route level code-splitting
-      // this generates a separate chunk (product.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../pages/Seriespage.vue"),
+      path: "/series/:id",
+      name: "serie",
+      component: SeriesPage,
+      props: true,
     },
   ],
 });

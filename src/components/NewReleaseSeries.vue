@@ -1,9 +1,5 @@
 <script>
 import SeriesCard from "./Cards/SeriesCard.vue";
-import series1 from "../assets/series1.png";
-import series2 from "../assets/series2.png";
-import series3 from "../assets/series3.png";
-import series4 from "../assets/series4.png";
 
 export default {
   components: {
@@ -11,55 +7,62 @@ export default {
   },
   data() {
     return {
-      movies: [
-        {
-          title: "Silo",
-          img: series1,
-          season: "1",
-          episode: "4",
-        },
-        {
-          title: "Black Knight",
-          img: series2,
-          season: "4",
-          episode: "10",
-        },
-        {
-          title: "Drops of God",
-          img: series3,
-          season: "3",
-          episode: "6",
-        },
-        {
-          title: "The Night Agent",
-          img: series4,
-          season: "2",
-          episode: "1",
-        },
-      ],
+      series: [],
+      loading: false,
+      error: null,
     };
+  },
+  mounted() {
+    this.fetchSeries();
+  },
+  methods: {
+    async fetchSeries() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await this.$http.get("/tv/top_rated");
+        this.series = response.data.results;
+      } catch (error) {
+        this.error = "Failed to load series. Please try again later.";
+        console.error("Error fetching popular series:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div class="space-y-10">
-    <div class="flex flex-row justify-between">
-      <h1 class="text-3xl font-bold">New Release - Series</h1>
-      <button class="font-bold">
-        <p>View all</p>
+    <div class="flex justify-between">
+      <h1 class="text-3xl font-bold">Top Rated - Series</h1>
+      <button class="flex items-center py-2 font-semibold">
+        <span>View all</span>
         <!-- Add Arrow sign -->
       </button>
     </div>
-    <div class="grid grid-cols-4 gap-8">
-      <div v-for="(items, index) in movies" :key="index">
-        <SeriesCard
-          :title="items.title"
-          :img="items.img"
-          :season="items.season"
-          :episode="items.episode"
-        />
-      </div>
+
+    <div v-if="loading" class="flex justify-center py-12">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"
+      ></div>
+    </div>
+
+    <div v-else-if="error" class="text-center py-12 text-red-600">
+      {{ error }}
+    </div>
+
+    <div
+      v-else
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    >
+      <SeriesCard
+        v-for="serie in series.slice(0, 4)"
+        :key="serie.id"
+        :serie="serie"
+      />
     </div>
   </div>
 </template>
